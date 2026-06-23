@@ -602,7 +602,7 @@
   /* ===================== 3D DNA HELIX (science section) ===================== */
   (function(){
     const canvas=document.getElementById('dna');if(typeof THREE==='undefined')return;
-    const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+    const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,(innerWidth<=768?1.5:2)));
     const scene=new THREE.Scene();const camera=new THREE.PerspectiveCamera(50,1,0.1,100);camera.position.z=5;
     const group=new THREE.Group();group.rotation.z=-0.3;scene.add(group);
     const TAU=Math.PI*2,N=420,M=2,pos=[],col=[];
@@ -621,7 +621,7 @@
     function go(){if(going||reduce)return;going=true;loop();}
     const _s=document.querySelector('.dna-band');if(_s)new IntersectionObserver(es=>{vis=es[0].isIntersecting;if(vis)go();},{threshold:0}).observe(_s);
     if(reduce){renderer.render(scene,camera);}else go();
-    if(hasGSAP&&!reduce){gsap.to(group.rotation,{y:'+=6',ease:'none',scrollTrigger:{trigger:'.dna-band',start:'top bottom',end:'bottom top',scrub:1}});}
+    /* DNA spins on its own via loop(); no scroll-driven rotation (avoids mobile scroll lag) */
   })();
 })();
 </script>
@@ -629,9 +629,10 @@
 /* ===== premium add-ons: smooth scroll, scrollspy, imagery, aurora, FAQ ===== */
 (function(){
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const MOB=innerWidth<=768||matchMedia('(pointer:coarse)').matches;
 
-  /* Lenis momentum scrolling, synced to ScrollTrigger */
-  if(!reduce && window.Lenis){
+  /* Lenis momentum scrolling, synced to ScrollTrigger (desktop only — native scroll is smoother on touch) */
+  if(!reduce && window.Lenis && !MOB){
     const lenis=new Lenis({duration:1.08,easing:t=>Math.min(1,1.001-Math.pow(2,-10*t)),smoothWheel:true,wheelMultiplier:1});
     window.__lenis=lenis;
     if(window.gsap&&window.ScrollTrigger){lenis.on('scroll',ScrollTrigger.update);gsap.ticker.add(t=>lenis.raf(t*1000));gsap.ticker.lagSmoothing(0);}
@@ -798,6 +799,7 @@
   if(typeof THREE==='undefined')return;
   function waveTex(){const z=64,c=document.createElement('canvas');c.width=c.height=z;const x=c.getContext('2d');const g=x.createRadialGradient(z/2,z/2,0,z/2,z/2,z/2);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.5,'rgba(255,255,255,.7)');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.beginPath();x.arc(z/2,z/2,z/2,0,7);x.fill();const t=new THREE.Texture(c);t.needsUpdate=true;return t;}
   const TX=waveTex();
+  if(innerWidth<=768||matchMedia('(pointer:coarse)').matches)return;
   document.querySelectorAll('canvas.wave-c').forEach(canvas=>{
     const ren=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});ren.setPixelRatio(Math.min(devicePixelRatio||1,2));
     const sc=new THREE.Scene();const cam=new THREE.PerspectiveCamera(55,1,.1,100);cam.position.set(0,6.5,13);cam.lookAt(0,-1,0);
@@ -948,7 +950,7 @@
 (function(){
   const canvas=document.getElementById('practiceBrain'); if(!canvas||typeof THREE==='undefined')return;
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches; const V=THREE.Vector3;
-  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,(innerWidth<=768?1.5:2)));
   const scene=new THREE.Scene();scene.fog=new THREE.Fog(0xffffff,3.0,7.4);
   const camera=new THREE.PerspectiveCamera(46,1,0.1,100);camera.position.set(0,0,3.5);
   const group=new THREE.Group();scene.add(group);
@@ -981,9 +983,10 @@
 })();
 </script>
 <script>
-/* interactive magnetic gridlines */
+/* interactive magnetic gridlines (desktop only — cursor-driven, skipped on touch to save CPU) */
 (function(){
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(innerWidth<=768||matchMedia('(pointer:coarse)').matches)return;
   document.querySelectorAll('canvas.igrid').forEach(canvas=>{
     const sec=canvas.closest('section'); const ctx=canvas.getContext('2d');
     let W,H,DPR,gap,cols,rows,grid=[],mx=-99999,my=-99999,active=false;

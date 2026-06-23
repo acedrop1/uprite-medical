@@ -11,3 +11,4 @@ node_modules/
 # Large source video (the site uses the compressed .mp4)
 *.MOV
 headervideo.MOV
+.vercel

@@ -191,7 +191,11 @@
   .tst-google .tg-score b{font-family:var(--display);font-weight:600}
   .tst-google p{color:var(--muted);font-size:.96rem;margin:0}
   .tst-google .tg-link{font-family:var(--display);font-weight:600;color:var(--accent)}
-  @media(max-width:880px){.tst-grid{grid-template-columns:1fr}}
+  @media(max-width:880px){
+    .tst-grid{display:flex;grid-template-columns:none;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;-webkit-overflow-scrolling:touch;padding-bottom:10px;scrollbar-width:none}
+    .tst-grid::-webkit-scrollbar{display:none}
+    .tst-grid .tst,.tst-grid .tst-google{flex:0 0 86%;scroll-snap-align:center}
+  }
 
   .loc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
   .loc{padding:34px;border:1px solid var(--line);border-radius:18px;transition:border-color .4s;will-change:transform}.loc:hover{border-color:var(--accent)}
@@ -389,7 +393,14 @@
   .ba-handle{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff;z-index:5;transform:translateX(-50%);box-shadow:0 0 14px rgba(0,0,0,.25)}
   .ba-handle span{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:48px;height:48px;border-radius:50%;background:#fff;box-shadow:0 8px 22px rgba(0,0,0,.3);display:grid;place-items:center;color:var(--accent);font-size:18px;font-weight:700}
   .ba-handle span::before{content:'⟺'}
-  @media(max-width:760px){.ba{height:600px}.ba-panel{padding:30px}.ba-panel li{font-size:.92rem}}
+  @media(max-width:760px){
+    .ba{height:auto;display:flex;flex-direction:column;cursor:default}
+    .ba-panel{position:static;clip-path:none!important;width:auto;padding:28px;align-items:flex-start;text-align:left}
+    .ba-before{align-items:flex-start;text-align:left}
+    .ba-before li{flex-direction:row}
+    .ba-handle{display:none}
+    .ba-panel li{font-size:.95rem}
+  }
 
   /* ===== light Inside + Specialties, images, brain-wave bg, spine tabs ===== */
   .wave-c{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
@@ -586,6 +597,14 @@
   .about-brain.drag{cursor:grabbing}
   .about-brain canvas{width:100%;height:100%;display:block}
   @media(max-width:900px){.about-grid{grid-template-columns:1fr;gap:24px}.about-brain{height:380px}}
+  /* mobile: brain becomes a faint background behind the copy (no empty block) */
+  @media(max-width:760px){
+    #about{overflow:hidden}
+    #about .about-grid{position:relative;display:block}
+    #about .about-brain{position:absolute;inset:-6% -8%;height:auto;z-index:0;opacity:.45;pointer-events:none}
+    #about .about-copy{position:relative;z-index:1}
+    #about .about-copy .sub{display:none}
+  }
 
 
   /* ===== interactive magnetic gridlines ===== */
@@ -757,8 +776,9 @@
   /* ===================== RESPONSIVE / LESS SCROLL ===================== */
   @media(max-width:880px){
     .pad{padding:90px 0}
-    #inside .card-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;grid-template-columns:none;padding:4px 4px 14px;-webkit-overflow-scrolling:touch}
-    #inside .magic-bento-card{flex:0 0 80%;scroll-snap-align:center;grid-column:auto!important;grid-row:auto!important;aspect-ratio:3/4;min-height:0}
+    #inside .wrap{padding:0 16px}
+    #inside .card-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;grid-template-columns:none;padding:4px 0 14px;-webkit-overflow-scrolling:touch}
+    #inside .magic-bento-card{flex:0 0 100%;scroll-snap-align:center;grid-column:auto!important;grid-row:auto!important;aspect-ratio:4/5;min-height:0}
     .statement{font-size:clamp(1.7rem,6vw,2.2rem)}
     .hours{gap:20px;padding:22px}
   }
@@ -801,7 +821,8 @@
   /* ===== contact cards full width ===== */
   #contact .contact-grid,.contact-grid{margin-bottom:24px}
   .contact-card span{white-space:nowrap}
-  .contact-split{grid-template-columns:1.05fr .95fr}
+  @media(min-width:881px){.contact-split{grid-template-columns:1.05fr .95fr}}
+  @media(max-width:880px){.contact-split{grid-template-columns:1fr!important;gap:24px}.contact-form{max-width:none;width:100%}}
   /* ===== inside wider ===== */
   #inside .wrap{max-width:1860px;padding:0 44px}
   /* ===== mobile menu fix + condensed sections ===== */
