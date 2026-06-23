@@ -1,0 +1,13 @@
+# OS
+.DS_Store
+**/.DS_Store
+
+# Dependencies
+node_modules/
+
+# Vercel
+.vercel/
+
+# Large source video (the site uses the compressed .mp4)
+*.MOV
+headervideo.MOV
