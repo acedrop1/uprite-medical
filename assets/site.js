@@ -69,11 +69,11 @@ var UPRITE_BADGE='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAADwCAYAAAA+
 
   const cf=document.getElementById('contactForm');
   if(cf)cf.addEventListener('submit',async e=>{e.preventDefault();const f=new FormData(cf);const name=(f.get('name')||'').toString().trim(),phone=(f.get('phone')||'').toString().trim(),email=(f.get('email')||'').toString().trim(),msg=(f.get('msg')||'').toString().trim();const note=document.getElementById('cfNote');const btn=cf.querySelector('button[type=submit]');
-    function done(){if(note)note.textContent='Thanks '+(name||'there')+', we\'ll be in touch shortly.';cf.reset();if(btn){btn.disabled=false;btn.textContent='Request a callback';}}
+    function done(){if(note)note.textContent='Thanks '+(name||'there')+', your request is in. No appointment is confirmed yet — our front desk will reach out to schedule.';cf.reset();if(btn){btn.disabled=false;btn.textContent='Request a callback';}}
     function mailtoFallback(){const body=encodeURIComponent('Name: '+name+'\nPhone: '+phone+(email?'\nEmail: '+email:'')+'\n\n'+msg);window.location.href='mailto:frontdesk@upritemedical.com?subject='+encodeURIComponent('Callback request from '+name)+'&body='+body;setTimeout(done,900);}
     if(btn){btn.disabled=true;btn.textContent='Sending…';}if(note)note.textContent='Sending your request…';
     if(location.protocol==='file:'){mailtoFallback();return;}
-    try{const r=await fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,phone:phone,email:email,message:msg,page:location.pathname})});if(!r.ok)throw 0;const d=await r.json().catch(()=>({}));if(d&&d.success===false)throw 0;done();}catch(err){mailtoFallback();}
+    try{const r=await fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,phone:phone,email:email,message:msg,type:'Appointment request',source:'Website contact form',page:location.pathname})});if(!r.ok)throw 0;const d=await r.json().catch(()=>({}));if(d&&d.success===false)throw 0;done();}catch(err){mailtoFallback();}
   });
 
   var __cb=document.getElementById('navtoggle');if(__cb){document.querySelectorAll('.drop a, .nav-item:not(.has-drop) > a').forEach(a=>a.addEventListener('click',()=>{__cb.checked=false;}));}

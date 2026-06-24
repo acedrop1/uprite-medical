@@ -15,6 +15,40 @@
   panel.querySelector('.x').addEventListener('click',close);
   function add(t,who){var d=document.createElement('div');d.className='chat-msg '+who;d.innerHTML=t;body.appendChild(d);body.scrollTop=body.scrollHeight;return d;}
   function botSay(t){setTimeout(()=>add(t,'bot'),260);}
+  function esc(s){return String(s||'').replace(/[<>&"]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];});}
+  var pickedOffice='';
+
+  // ---- lead capture: collects details and emails the front desk via /api/contact ----
+  function leadForm(office){
+    var id='lf'+Date.now();
+    var sel=function(v){return office===v?' selected':'';};
+    var html='Sure &mdash; leave your details and our front desk will call you to schedule. <b>No appointment is booked until they confirm.</b>'
+      +'<form class="chat-lead" id="'+id+'" novalidate>'
+      +'<input name="name" placeholder="Your name" autocomplete="name" required>'
+      +'<input name="phone" placeholder="Phone number" inputmode="tel" autocomplete="tel" required>'
+      +'<select name="office"><option value="">Preferred office</option><option'+sel('Totowa')+'>Totowa</option><option'+sel('Hazlet')+'>Hazlet</option><option>Either</option></select>'
+      +'<textarea name="msg" rows="2" placeholder="Briefly, what do you need? (optional)"></textarea>'
+      +'<button type="submit">Send request</button>'
+      +'</form>';
+    var bubble=add(html,'bot');
+    chips.innerHTML='';
+    var f=bubble.querySelector('#'+id);
+    f.addEventListener('submit',function(e){
+      e.preventDefault();
+      var fd=new FormData(f);
+      var name=(fd.get('name')||'').toString().trim(),phone=(fd.get('phone')||'').toString().trim();
+      var off=(fd.get('office')||'').toString().trim(),msg=(fd.get('msg')||'').toString().trim();
+      if(!name||!phone){return;}
+      var btn=f.querySelector('button');btn.disabled=true;btn.textContent='Sending…';
+      function ok(){f.outerHTML='<div class="lead-done">Thanks '+esc(name)+', your request is in. Our front desk will call you at <b>'+esc(phone)+'</b> to confirm a time &mdash; nothing is booked yet.</div>';body.scrollTop=body.scrollHeight;afterChips();}
+      function fail(){btn.disabled=false;btn.textContent='Send request';botSay('Sorry, I couldn’t send that just now. Please call <a href="'+TEL+'">'+PH+'</a> or use the <a href="contact.html">Contact</a> form and we’ll reach out.');}
+      if(location.protocol==='file:'){ok();return;}
+      fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,phone:phone,message:msg,office:off,type:'Chat appointment request',source:'Chat assistant',page:location.pathname})})
+        .then(function(r){return r.ok?r.json().catch(function(){return{};}):Promise.reject();})
+        .then(function(d){if(d&&d.success===false)return Promise.reject();ok();})
+        .catch(fail);
+    });
+  }
 
   // ---- clinic data ----
   var PH='(201) 849-1000', TEL='tel:+12018491000';
@@ -42,13 +76,13 @@
 
   // ---- booking flow ----
   function startBooking(){
-    botSay('Happy to help you book. We have <b>two New Jersey offices</b> &mdash; which one is most convenient? Pick a location below and I’ll show you how to book there.');
-    setChips(['Totowa','Hazlet','Not sure — just call me']);
+    botSay('Happy to help you book. We have <b>two New Jersey offices</b> &mdash; which one is most convenient? Pick a location, then leave your details and our front desk will call you to confirm a time.');
+    setChips(['Totowa','Hazlet','Request a callback','Not sure — just call me']);
   }
   function branchCard(key){
-    var b=BRANCHES[key];
-    botSay('<b>'+b.n+'</b> &mdash; '+b.d+'.<br><span class="chat-sub">'+b.a+'</span><br><span class="chat-sub">Hours: '+HOURS+'</span><br><br>To book at <b>'+b.n+'</b>, call us or send a request and our front desk will confirm your time:'+actBtns());
-    setChips(['Pick another office','Insurance','Pain evaluation']);
+    var b=BRANCHES[key];pickedOffice=b.n;
+    botSay('<b>'+b.n+'</b> &mdash; '+b.d+'.<br><span class="chat-sub">'+b.a+'</span><br><span class="chat-sub">Hours: '+HOURS+'</span><br><br>To book at <b>'+b.n+'</b>, request a callback below or call us &mdash; our front desk will confirm your time:'+actBtns());
+    setChips(['Request a callback','Pick another office','Insurance']);
   }
 
   // ---- compliance: questions we should not answer as medical advice ----
@@ -78,6 +112,8 @@
     // 2) branch pick
     var bkey=Object.keys(BRANCHES).find(function(k){return s.indexOf(k)>=0;});
     if(bkey){branchCard(bkey);return;}
+    // 2b) callback / leave details -> lead capture form (emails the front desk)
+    if(/request a callback|callback|call me back|leave my (info|detail)|send a request|request a call/.test(s)){leadForm(pickedOffice);return;}
     // 3) booking intent
     if(/(book|appointment|schedule|consult|booking|another office|reserve|visit)/.test(s)){startBooking();return;}
     if(s.indexOf('just call me')>=0||s.indexOf('not sure')>=0){botSay('No problem &mdash; call <a href="'+TEL+'">'+PH+'</a> and our front desk will find the office and time that work best for you.'+actBtns());afterChips();return;}
@@ -95,7 +131,7 @@
     botSay(hit?hit.a:'I can help with <b>booking</b>, insurance, locations, our doctors and treatments. For anything specific, call <a href="'+TEL+'">'+PH+'</a> or <a href="contact.html">contact us</a>.<br>'+DISC);
     afterChips();
   }
-  function afterChips(){setChips(['Book an appointment','Insurance','Locations & hours','Talk to a person']);}
+  function afterChips(){setChips(['Book an appointment','Request a callback','Insurance','Locations & hours']);}
 
   form.addEventListener('submit',function(e){e.preventDefault();var v=text.value.trim();if(!v)return;text.value='';handle(v);});
 })();

@@ -8,39 +8,49 @@
 
 const TO   = process.env.LEAD_TO   || 'frontdesk@upritemedical.com';
 const FROM = process.env.LEAD_FROM || 'Uprite Website <noreply@upritemedical.com>';
+const LOGO = process.env.LEAD_LOGO || 'https://uprite-medical.vercel.app/logo-email.png';
 
 function esc(s){return String(s||'').replace(/[<>&"]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];});}
 
+function pill(t,bg,fg){return '<span style="display:inline-block;background:'+bg+';color:'+fg+';font:700 11px/1 Arial,sans-serif;letter-spacing:.05em;text-transform:uppercase;padding:6px 12px;border-radius:999px">'+esc(t)+'</span>';}
 function brandedEmail(d){
   var when=new Date().toLocaleString('en-US',{timeZone:'America/New_York',dateStyle:'medium',timeStyle:'short'});
-  function row(label,val){return val?'<tr><td style="padding:10px 0;border-bottom:1px solid #edf0f5;color:#6a7384;font:600 12px/1.2 Arial,sans-serif;width:140px;vertical-align:top">'+label+'</td><td style="padding:10px 0;border-bottom:1px solid #edf0f5;color:#141821;font:14px/1.5 Arial,sans-serif">'+esc(val)+'</td></tr>':'';}
+  function row(label,val){return val?'<tr><td style="padding:11px 0;border-bottom:1px solid #eef1f6;color:#7a8398;font:600 11px/1.2 Arial,sans-serif;letter-spacing:.04em;text-transform:uppercase;width:138px;vertical-align:top">'+label+'</td><td style="padding:11px 0;border-bottom:1px solid #eef1f6;color:#141821;font:14px/1.5 Arial,sans-serif">'+esc(val)+'</td></tr>':'';}
+  var ph=String(d.phone||'').replace(/[^0-9+]/g,'');
   return ''+
-  '<div style="background:#f4f6fb;padding:28px 0;font-family:Arial,sans-serif">'+
+  '<div style="background:#eef1f8;padding:30px 12px;font-family:Arial,Helvetica,sans-serif">'+
   '<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">'+
-  '<table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 14px 40px -18px rgba(10,16,40,.25)">'+
-    // header
-    '<tr><td style="background:#071335;padding:22px 28px">'+
-      '<div style="font:700 19px/1 Arial,sans-serif;color:#ffffff;letter-spacing:.5px">UPRITE MEDICAL</div>'+
-      '<div style="font:12px/1.4 Arial,sans-serif;color:#b0c4e6;margin-top:5px">Spine, Orthopedic &amp; Neuroscience Center</div>'+
+  '<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 18px 50px -20px rgba(7,19,53,.30)">'+
+    // header (brand wordmark + dotted arc cue)
+    '<tr><td style="background:#071335;padding:26px 30px 22px">'+
+      '<img src="'+LOGO+'" alt="Uprite Medical" width="180" height="61" style="display:block;border:0;outline:none;text-decoration:none">'+
+      '<div style="font:11px/1.4 Arial,sans-serif;color:#9fb4dc;margin-top:13px;letter-spacing:.12em">SPINE &middot; ORTHOPEDIC &middot; NEUROSCIENCE CENTER</div>'+
     '</td></tr>'+
     '<tr><td style="height:4px;background:#1747e6"></td></tr>'+
-    // body
-    '<tr><td style="padding:26px 28px 8px">'+
-      '<div style="font:700 16px/1.3 Arial,sans-serif;color:#141821">New appointment request</div>'+
-      '<div style="font:13px/1.5 Arial,sans-serif;color:#6a7384;margin-top:4px">Submitted '+esc(when)+' (ET)</div>'+
+    // status row
+    '<tr><td style="padding:24px 30px 8px">'+
+      pill(d.type||'New appointment request','#e8edff','#1747e6')+'&nbsp;&nbsp;'+pill('Pending','#fff3da','#9a6a00')+
+      '<div style="font:13px/1.5 Arial,sans-serif;color:#6a7384;margin-top:13px">Submitted '+esc(when)+' (ET)</div>'+
     '</td></tr>'+
-    '<tr><td style="padding:8px 28px 6px">'+
+    // fields
+    '<tr><td style="padding:6px 30px 4px">'+
       '<table role="presentation" width="100%" cellpadding="0" cellspacing="0">'+
-        row('Name',d.name)+row('Phone',d.phone)+row('Email',d.email)+row('Message',d.message)+row('From page',d.page)+
+        row('Name',d.name)+row('Phone',d.phone)+row('Email',d.email)+row('Preferred office',d.office)+row('Message',d.message)+row('Source',d.source)+
       '</table>'+
     '</td></tr>'+
-    // CTA
-    '<tr><td style="padding:18px 28px 26px">'+
-      (d.phone?'<a href="tel:'+esc(String(d.phone).replace(/[^0-9+]/g,''))+'" style="display:inline-block;background:#1747e6;color:#ffffff;text-decoration:none;font:600 14px/1 Arial,sans-serif;padding:12px 20px;border-radius:999px">Call patient back</a>':'')+
+    // action-needed note
+    '<tr><td style="padding:18px 30px 0">'+
+      '<div style="background:#f5f8ff;border:1px solid #dbe4ff;border-radius:12px;padding:14px 16px;font:13px/1.55 Arial,sans-serif;color:#46506a">'+
+      '<b style="color:#1747e6">Action needed:</b> This is a request only. No appointment is confirmed until the front desk contacts the patient to schedule.</div>'+
+    '</td></tr>'+
+    // CTAs
+    '<tr><td style="padding:18px 30px 28px">'+
+      (ph?'<a href="tel:'+esc(ph)+'" style="display:inline-block;background:#1747e6;color:#ffffff;text-decoration:none;font:700 14px/1 Arial,sans-serif;padding:13px 22px;border-radius:999px;margin:0 8px 8px 0">Call patient back</a>':'')+
+      (d.email?'<a href="mailto:'+esc(d.email)+'" style="display:inline-block;background:#ffffff;color:#1747e6;text-decoration:none;font:700 14px/1 Arial,sans-serif;padding:12px 21px;border-radius:999px;border:1px solid #1747e6;margin:0 0 8px 0">Email patient</a>':'')+
     '</td></tr>'+
     // footer
-    '<tr><td style="background:#f7f9fc;padding:16px 28px;border-top:1px solid #edf0f5">'+
-      '<div style="font:11px/1.6 Arial,sans-serif;color:#8a93a6">Uprite Medical &middot; (201) 849-1000 &middot; Totowa &amp; Hazlet, NJ<br>This lead was sent from the website contact form. Reply to the patient by phone or email above.</div>'+
+    '<tr><td style="background:#f7f9fc;padding:18px 30px;border-top:1px solid #edf0f5">'+
+      '<div style="font:11px/1.7 Arial,sans-serif;color:#8a93a6">Uprite Medical &middot; (201) 849-1000 &middot; frontdesk@upritemedical.com<br>Totowa: 825 Riverview Dr, Floor 1 &middot; Hazlet: 1270 NJ-35, Suite 1<br>Sent automatically from upritemedical.com. Reply to the patient by phone or email above.</div>'+
     '</td></tr>'+
   '</table></td></tr></table></div>';
 }
@@ -64,7 +74,7 @@ module.exports = async function handler(req,res){
         from:FROM,
         to:[TO],
         reply_to:d.email||undefined,
-        subject:'New appointment request — '+d.name,
+        subject:(d.type||'New appointment request')+' — '+d.name,
         html:brandedEmail(d)
       })
     });
