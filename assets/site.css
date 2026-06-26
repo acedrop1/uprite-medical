@@ -380,6 +380,20 @@
   .ba{position:relative;height:480px;border-radius:24px;overflow:hidden;border:1px solid var(--line);user-select:none;cursor:ew-resize;--cut:50%}
   .ba-cite{color:var(--muted);font-size:.82rem;line-height:1.55;margin:16px 2px 0;max-width:70ch}
   .ba-cite a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
+  /* two-approach cards (minimally invasive + open, both positive) */
+  .appr-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .appr{border-radius:24px;padding:44px 46px;color:#fff;position:relative;overflow:hidden}
+  .appr:not(.alt){background:linear-gradient(150deg,var(--accent),var(--violet))}
+  .appr.alt{background:#0d1322;border:1px solid rgba(255,255,255,.08)}
+  .appr .badge2{display:inline-block;font-family:var(--display);font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:7px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.4);margin-bottom:20px}
+  .appr h3{font-family:var(--display);font-size:clamp(1.5rem,3vw,2.1rem);font-weight:600;margin:0 0 12px;color:#fff}
+  .appr>p{color:rgba(255,255,255,.82);margin:0 0 22px;font-size:1.02rem;line-height:1.5}
+  .appr ul{list-style:none;display:flex;flex-direction:column;gap:13px;margin:0;padding:0}
+  .appr li{display:flex;align-items:flex-start;gap:12px;font-size:1.03rem;line-height:1.35;color:rgba(255,255,255,.94)}
+  .appr li::before{content:'';width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.55);flex:none;margin-top:2px}
+  .appr:not(.alt) li::before{background:#fff;border-color:#fff}
+  .appr.alt li::before{border-color:var(--accent);box-shadow:inset 0 0 0 3px #0d1322,0 0 0 1px var(--accent)}
+  @media(max-width:760px){.appr-grid{grid-template-columns:1fr;gap:18px}.appr{padding:30px 28px}}
   .ba-panel{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:48px 56px;color:#fff}
   .ba-after{background:linear-gradient(150deg,var(--accent),var(--violet));align-items:flex-start;text-align:left}
   .ba-before{background:#0d1322;align-items:flex-end;text-align:right;clip-path:inset(0 0 0 var(--cut))}
