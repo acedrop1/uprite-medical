@@ -155,7 +155,7 @@
   .bleed .btn{background:#fff;color:var(--accent);border-color:#fff}.bleed .btn:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
 
   /* doctors */
-  .docs{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .docs{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
   .doc{padding:40px;border:1px solid var(--line);border-radius:20px;transition:border-color .4s,box-shadow .4s;will-change:transform}
   .doc:hover{border-color:var(--accent);box-shadow:0 30px 60px -32px rgba(23,71,230,.4)}
   .doc .av{width:78px;height:78px;border-radius:15px;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:1.7rem;color:#fff;background:linear-gradient(135deg,var(--violet),var(--accent));margin-bottom:22px}
