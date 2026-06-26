@@ -277,7 +277,7 @@
     .card-grid{grid-template-columns:repeat(4,1fr)}
     .magic-bento-card:nth-child(3){grid-column:span 2;grid-row:span 2}
     .magic-bento-card:nth-child(4){grid-column:1 / span 2;grid-row:2 / span 2}
-    .magic-bento-card:nth-child(6){grid-column:4;grid-row:3}
+    .magic-bento-card:nth-child(5){grid-column:3 / span 2;grid-row:3}
   }
   .magic-bento-card{display:flex;flex-direction:column;justify-content:space-between;position:relative;aspect-ratio:4/3;min-height:210px;width:100%;padding:1.6em;border-radius:20px;border:1px solid #20283c;background:#0d1322;font-weight:300;overflow:hidden;transition:transform .3s,box-shadow .3s;--glow-x:50%;--glow-y:50%;--glow-intensity:0;--glow-radius:220px;--glow-color:47,107,255}
   .magic-bento-card:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.45)}
