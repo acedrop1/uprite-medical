@@ -41,7 +41,7 @@
       if(!name||!phone){return;}
       var btn=f.querySelector('button');btn.disabled=true;btn.textContent='Sending…';
       function ok(){f.outerHTML='<div class="lead-done">Thanks '+esc(name)+', your request is in. Our front desk will call you at <b>'+esc(phone)+'</b> to confirm a time &mdash; nothing is booked yet.</div>';body.scrollTop=body.scrollHeight;afterChips();}
-      function fail(){btn.disabled=false;btn.textContent='Send request';botSay('Sorry, I couldn’t send that just now. Please call <a href="'+TEL+'">'+PH+'</a> or use the <a href="contact.html">Contact</a> form and we’ll reach out.');}
+      function fail(){btn.disabled=false;btn.textContent='Send request';botSay('Sorry, I couldn’t send that just now. Please call <a href="'+TEL+'">'+PH+'</a> or use the <a href="contact">Contact</a> form and we’ll reach out.');}
       if(location.protocol==='file:'){ok();return;}
       fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,phone:phone,message:msg,office:off,type:'Chat appointment request',source:'Chat assistant',page:location.pathname})})
         .then(function(r){return r.ok?r.json().catch(function(){return{};}):Promise.reject();})
@@ -58,7 +58,7 @@
     hazlet:{n:'Hazlet',d:'Serving Monmouth County',a:'1270 NJ-35, Suite 1, Middletown Twp, NJ 07748'}
   };
   var DISC='<span class="chat-note">General information only &mdash; not a medical diagnosis or treatment advice. Please don’t share sensitive personal or health details here.</span>';
-  function actBtns(){return '<div class="chat-act"><a class="cbtn" href="'+TEL+'">Call '+PH+'</a><a class="cbtn ghost" href="contact.html">Request online</a></div>';}
+  function actBtns(){return '<div class="chat-act"><a class="cbtn" href="'+TEL+'">Call '+PH+'</a><a class="cbtn ghost" href="contact">Request online</a></div>';}
 
   // page topic (detail pages)
   var h1=document.querySelector('.page-hero h1,h1');var sum=document.querySelector('.page-hero .sum');
@@ -91,14 +91,14 @@
 
   var KB=[
     {k:['insurance','cost','price','pay','coverage','copay','bill'],a:'We work with most major insurance plans. For exact coverage and out-of-pocket costs, call <a href="'+TEL+'">'+PH+'</a> and our team will verify your benefits before your visit.'},
-    {k:['location','where','office','address','open','time','hour'],a:'We have two NJ offices &mdash; <b>Totowa and Hazlet</b>. Hours: '+HOURS+'. See <a href="locations.html">Locations</a> for maps and directions.'},
+    {k:['location','where','office','address','open','time','hour'],a:'We have two NJ offices &mdash; <b>Totowa and Hazlet</b>. Hours: '+HOURS+'. See <a href="locations">Locations</a> for maps and directions.'},
     {k:['pain','evaluation','assessment','quiz'],a:'Our <a href="#" data-eval>Free Pain Evaluation</a> asks a few quick questions and gives a personalized recommendation plus a PDF summary you can bring to your visit. '+DISC},
     {k:['recovery','recover','downtime','heal','back to work'],a:'Because our procedures are minimally invasive, most patients have shorter recovery and a faster return to daily life than with traditional surgery. Your specialist will give guidance specific to you.'},
-    {k:['doctor','surgeon','who','tawfik','elder','team','provider'],a:'<b>Dr. Tamir Tawfik, MD</b> is our board-certified neurosurgeon (spine), and <b>Dr. Bader Elder, DO</b> is our endovascular (vein) expert. Meet them on the <a href="doctors.html">Doctors</a> page.'},
-    {k:['mri','second opinion','scan','review','records'],a:'Already have a diagnosis or MRI? We offer an MRI review &mdash; our team will discuss your options. Call <a href="'+TEL+'">'+PH+'</a> or use <a href="contact.html">Contact</a>.'},
+    {k:['doctor','surgeon','who','tawfik','elder','team','provider'],a:'<b>Dr. Tamir Tawfik, MD</b> is our board-certified neurosurgeon (spine), and <b>Dr. Bader Elder, DO</b> is our endovascular (vein) expert. Meet them on the <a href="doctors">Doctors</a> page.'},
+    {k:['mri','second opinion','scan','review','records'],a:'Already have a diagnosis or MRI? We offer an MRI review &mdash; our team will discuss your options. Call <a href="'+TEL+'">'+PH+'</a> or use <a href="contact">Contact</a>.'},
     {k:['phone','call','contact','email','reach','fax'],a:'Call <a href="'+TEL+'">'+PH+'</a> (Fax 551-340-4607) or email <a href="mailto:frontdesk@upritemedical.com">frontdesk@upritemedical.com</a>.'},
-    {k:['spine','back','disc','sciatica','stenosis','neck','herniat'],a:'We treat the full range of spine and nerve conditions &mdash; herniated discs, stenosis, sciatica and more. Explore <a href="conditions.html">Conditions</a> and <a href="procedures.html">Procedures</a>, or book a consultation to discuss your case.'},
-    {k:['vein','varicose','spider','leg','swelling','venous'],a:'Our endovascular team treats varicose &amp; spider veins, leg swelling and venous insufficiency with quick in-office procedures. See <a href="conditions.html">Conditions</a>.'}
+    {k:['spine','back','disc','sciatica','stenosis','neck','herniat'],a:'We treat the full range of spine and nerve conditions &mdash; herniated discs, stenosis, sciatica and more. Explore <a href="conditions">Conditions</a> and <a href="procedures">Procedures</a>, or book a consultation to discuss your case.'},
+    {k:['vein','varicose','spider','leg','swelling','venous'],a:'Our endovascular team treats varicose &amp; spider veins, leg swelling and venous insufficiency with quick in-office procedures. See <a href="conditions">Conditions</a>.'}
   ];
 
   function handle(q){
@@ -117,7 +117,7 @@
     // 3) booking intent
     if(/(book|appointment|schedule|consult|booking|another office|reserve|visit)/.test(s)){startBooking();return;}
     if(s.indexOf('just call me')>=0||s.indexOf('not sure')>=0){botSay('No problem &mdash; call <a href="'+TEL+'">'+PH+'</a> and our front desk will find the office and time that work best for you.'+actBtns());afterChips();return;}
-    if(s.indexOf('person')>=0||s.indexOf('human')>=0||s.indexOf('talk to')>=0){botSay('Our team is happy to help &mdash; call <a href="'+TEL+'">'+PH+'</a> or use the <a href="contact.html">Contact</a> form and we’ll reach out.');afterChips();return;}
+    if(s.indexOf('person')>=0||s.indexOf('human')>=0||s.indexOf('talk to')>=0){botSay('Our team is happy to help &mdash; call <a href="'+TEL+'">'+PH+'</a> or use the <a href="contact">Contact</a> form and we’ll reach out.');afterChips();return;}
     // 4) detail-page topic
     if(isDetail&&topic&&s.indexOf('about')>=0){botSay((topicSum||('Learn more about '+topic+'.'))+'<br><br>To discuss '+topic+' with a specialist, book a consultation below.'+actBtns()+DISC);afterChips();return;}
     // 5) compliance: don't give diagnosis / personal medical advice
@@ -128,7 +128,7 @@
     }
     // 6) knowledge base
     var hit=KB.find(function(e){return e.k.some(function(w){return s.indexOf(w)>=0;});});
-    botSay(hit?hit.a:'I can help with <b>booking</b>, insurance, locations, our doctors and treatments. For anything specific, call <a href="'+TEL+'">'+PH+'</a> or <a href="contact.html">contact us</a>.<br>'+DISC);
+    botSay(hit?hit.a:'I can help with <b>booking</b>, insurance, locations, our doctors and treatments. For anything specific, call <a href="'+TEL+'">'+PH+'</a> or <a href="contact">contact us</a>.<br>'+DISC);
     afterChips();
   }
   function afterChips(){setChips(['Book an appointment','Request a callback','Insurance','Locations & hours']);}
