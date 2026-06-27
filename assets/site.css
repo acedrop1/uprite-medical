@@ -51,6 +51,12 @@
   .nav-r .nav-call svg{stroke:var(--accent)}
   .nav-r .nav-call:hover{background:var(--accent)}
   .nav-r .nav-call:hover svg{stroke:#fff}
+  /* desktop call button: phone icon + visible number (desktop reads the number, doesn't tap) */
+  .nav-call-num{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 16px;border-radius:999px;border:1px solid rgba(23,71,230,.35);background:#fff;color:var(--ink);text-decoration:none;font-family:var(--display);font-weight:600;font-size:14px;white-space:nowrap;transition:.25s}
+  .nav-call-num svg{width:16px;height:16px;stroke:var(--accent);fill:none;flex:none}
+  .nav-call-num:hover{border-color:var(--accent);background:var(--accent);color:#fff}
+  .nav-call-num:hover svg{stroke:#fff}
+  @media(max-width:980px){.nav-call-num{display:none}}
   .btn{font-family:var(--display);font-weight:600;font-size:14px;padding:13px 24px;border-radius:999px;border:1px solid var(--ink);transition:background .28s,color .28s,border-color .28s;display:inline-flex;align-items:center;gap:9px;white-space:nowrap;background:var(--ink);color:#fff;will-change:transform}
   .btn:hover{background:var(--accent);border-color:var(--accent)}
   .btn.alt{background:transparent;color:var(--ink)}.btn.alt:hover{background:var(--ink);color:#fff}
