@@ -12,3 +12,8 @@ node_modules/
 *.MOV
 headervideo.MOV
 .vercel
+.env*.local
+.claude/
+
+# Portal lives here locally but is its own repo; never publish it with the marketing site
+Uprite-Portal/
